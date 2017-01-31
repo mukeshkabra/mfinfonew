@@ -1,9 +1,9 @@
 package mf.andorid.com.mfinfo.Fragments;
 
+import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -28,12 +29,17 @@ import mf.andorid.com.mfinfo.OkHttpHandler;
 import mf.andorid.com.mfinfo.R;
 import mf.andorid.com.mfinfo.sharedPref.portfolio;
 import mf.andorid.com.mfinfo.sharedPref.portfolioPref;
+import mf.andorid.com.mfinfo.webrequests.Api;
+import mf.andorid.com.mfinfo.webrequests.BaseRequest;
+import mf.andorid.com.mfinfo.webrequests.RestClient;
+import mf.andorid.com.mfinfo.webrequests.ServiceCallBack;
+import retrofit.RetrofitError;
 
 /**
  * Created by 8398 on 19/12/16.
  */
 
-public class addToPortfolioFragment extends Fragment {
+public class addToPortfolioFragment extends Fragment implements ServiceCallBack {
         ListView lv;
         Context context;
         ArrayList prgmName;
@@ -48,7 +54,7 @@ public class addToPortfolioFragment extends Fragment {
     private int pMonth;
     private int pYear;
     private EditText et;
-    EditText edit_date;
+    //EditText edit_date;
     private DatePicker dpResult;
     public EditText edit_Nav;
     EditText edit_units;
@@ -57,9 +63,11 @@ public class addToPortfolioFragment extends Fragment {
     private String mcode;
     private String mfName;
     private String currentNav;
+    private ImageView img_selectdate;
     SharedPreferences sharedpreferences;
     public String navondate;
-
+    OnDateSetListener ondate;
+    EditText edit_date;
 
 
     static final int DATE_DIALOG_ID = 999;
@@ -83,19 +91,37 @@ public class addToPortfolioFragment extends Fragment {
             sharedPreference = new portfolioPref();
 
             edit_date=(EditText)vu.findViewById(R.id.editText_Date);
-            btnChangeDate=(Button)vu.findViewById(R.id.imageButton1);
+            img_selectdate=(ImageView)vu.findViewById(R.id.img_selectdate);
             final Button btn_save=(Button) vu.findViewById(R.id.btn_Save);
             btn_save.setEnabled(false);
-            btnChangeDate.setOnClickListener(new View.OnClickListener() {
+
+            ondate = new OnDateSetListener() {
+
+                public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                      int dayOfMonth) {
+                    edit_date=(EditText) getActivity().findViewById(R.id.editText_Date);
+                    edit_date.setText(String.valueOf(dayOfMonth) + "-" + String.valueOf(monthOfYear+1)
+                            + "-" + String.valueOf(year));
+                    //getNavonDate(mcode,String.valueOf(dayOfMonth) + "-" + String.valueOf(monthOfYear+1)+ "-" + String.valueOf(year));
+                    getNavonDate(mcode, "02-Nov-2016");
+                }
+            };
+            img_selectdate.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    DialogFragment picker = new DatePickerFragment();
+                   /* DatePickerFragment picker = new DatePickerFragment();
                     Bundle datepick = new Bundle();
                     datepick.putString("mCode", mcode);
                     picker.setArguments(datepick);
 
                     picker.show(getFragmentManager(), "datePicker");
+                    picker.setCallBack(ondate);*/
+                    showDatePicker();
+
+
                 }
             });
+
+
 
             TextView textView_schemaname=(TextView)vu.findViewById(R.id.textViewt);
             textView_schemaname.setText(mfName);
@@ -118,16 +144,22 @@ public class addToPortfolioFragment extends Fragment {
                 public void afterTextChanged(Editable s) {
                         System.out.println("TextWather" + s.toString());
                     //edit_units.setText(s.toString());
-                    Double temp1=Double.valueOf(s.toString());
-                    Double temp2=Double.valueOf(edit_Nav.getText().toString());
-                    System.out.println(temp1);
-                    System.out.println(temp2);
-                    System.out.println(temp1/temp2);
-                    Double temp=temp1/temp2;
-                    //String s1 = String.format("%.2f", Double.toString(temp));
+                   try {
+                       Double temp1 = Double.valueOf(s.toString());
+                       Double temp2 = Double.valueOf(edit_Nav.getText().toString());
+                       System.out.println(temp1);
+                       System.out.println(temp2);
+                       System.out.println(temp1 / temp2);
+                       Double temp = temp1 / temp2;
+                       //String s1 = String.format("%.2f", Double.toString(temp));
 
-                    edit_units.setText(Double.toString(temp));
-                    btn_save.setEnabled(true);
+                       edit_units.setText(Double.toString(temp));
+                       btn_save.setEnabled(true);
+                   }
+                   catch(Exception e){
+                       edit_units.getText().clear();
+                       btn_save.setEnabled(false);
+                   }
 
 
                 }
@@ -186,7 +218,7 @@ public class addToPortfolioFragment extends Fragment {
         JsonObject obj =(JsonObject)j.parse(result.toString());
         //obj.get("nav")
         System.out.println("Hello result " + obj.get("nav"));
-        System.out.println("Hello result " + obj.get("nav").toString().replaceAll("\"",""));
+        System.out.println("Hello result " + obj.get("nav").toString().replaceAll("\"", ""));
         return obj.get("nav").toString().replaceAll("\"","");
     }
 
@@ -233,6 +265,58 @@ public class addToPortfolioFragment extends Fragment {
 
     public void updateNavondate(){
         edit_Nav.setText("12");
+    }
+    private void showDatePicker() {
+        DatePickerFragment date = new DatePickerFragment();
+        /**
+         * Set Up Current Date Into dialog
+         */
+        Calendar calender = Calendar.getInstance();
+        Bundle args = new Bundle();
+        args.putInt("year", calender.get(Calendar.YEAR));
+        args.putInt("month", calender.get(Calendar.MONTH));
+        args.putInt("day", calender.get(Calendar.DAY_OF_MONTH));
+        date.setArguments(args);
+        /**
+         * Set Call back to capture selected date
+         */
+        date.setCallBack(ondate);
+        date.show(getFragmentManager(), "Date Picker");
+    }
+    public void getNavonDate(String pid,String date){
+        BaseRequest baseRequest = new BaseRequest(getActivity());
+        baseRequest.setServiceCallBack(this);
+        baseRequest.setRequestTag(RestClient.GET_MUTUAL_FUNDS);
+        Api api = (Api) baseRequest.execute(Api.class);
+        try {
+            if (api != null) {
+                api.getNavondate(pid, date, baseRequest.requestCallback());
+            }
+        } catch (Exception e) {
+
+        }}
+
+
+
+    @Override
+    public void onSuccess(int tag, String baseResponse) {
+        System.out.println(baseResponse);
+        JsonParser j= new JsonParser();
+        JsonObject obj =(JsonObject)j.parse(baseResponse.toString());
+        //obj.get("nav")
+        System.out.println("Hello result " + obj.get("nav"));
+        System.out.println("Hello result " + obj.get("nav").toString().replaceAll("\"", ""));
+        String navondate=obj.get("nav").toString().replaceAll("\"","");
+
+        System.out.println(navondate);
+        EditText editText1=(EditText)getActivity().findViewById(R.id.editText_nav);
+        // System.out.println(editText1);
+        editText1.setText(navondate);
+    }
+
+    @Override
+    public void onFail(RetrofitError error) {
+
     }
 }
 

@@ -93,16 +93,15 @@
         android:layout_below="@+id/textView_units"
         android:background="@drawable/testing_gradient"
         android:id="@+id/editText_units" />
+<ImageView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:src="@drawable/ic_calendar"
+    android:id="@+id/img_selectdate"
+    android:layout_below="@+id/textView_date"
+    android:layout_toRightOf="@+id/editText_Date"
+    android:cropToPadding="true"/>
 
-    <Button
-        android:id="@+id/imageButton1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button"
-        android:layout_below="@+id/textView_date"
-        android:layout_toRightOf="@+id/editText_Date"
-        android:cropToPadding="true"
-        />
     <Button
         android:id="@+id/btn_Save"
         android:layout_width="wrap_content"

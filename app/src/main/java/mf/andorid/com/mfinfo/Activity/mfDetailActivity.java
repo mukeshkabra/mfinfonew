@@ -152,7 +152,7 @@ public class mfDetailActivity extends FragmentActivity implements ServiceCallBac
 
         addTo.setVisibility(View.GONE);
         watchlist.setVisibility(View.GONE);
-
+        checkfundInWishlist(name);
         img_addto.setColorFilter(0xFFFF0000, PorterDuff.Mode.MULTIPLY);
         img_addto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -515,6 +515,19 @@ public class mfDetailActivity extends FragmentActivity implements ServiceCallBac
             return mFragmentTitleList.get(position);
         }
 
+    }
+    public void checkfundInWishlist(String mname){
+        ArrayList<Product> p1=sharedPreference.getFavorites(getApplicationContext());
+        if(p1!=null){
+            for(int i=0;i<p1.size();i++){
+                if(p1.get(i).getName().equals(mname)){
+                    img_wishlist.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.green));
+                    img_wishlist.setEnabled(false);
+                    break;
+                }
+
+
+            }}
     }
 
 }
