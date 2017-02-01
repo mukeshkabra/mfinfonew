@@ -30,6 +30,9 @@ public class wishlistAdapter extends BaseAdapter{
         date=mdate;
         inflater = ( LayoutInflater )context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
+    public wishlistAdapter(){
+
+    }
     @Override
     public int getCount() {
         // TODO Auto-generated method stub

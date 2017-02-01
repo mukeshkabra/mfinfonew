@@ -24,7 +24,10 @@ import com.google.gson.JsonParser;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
+import mf.andorid.com.mfinfo.Adapter.portfolioAdapter;
+import mf.andorid.com.mfinfo.Constant.PortfolioInfo;
 import mf.andorid.com.mfinfo.OkHttpHandler;
 import mf.andorid.com.mfinfo.R;
 import mf.andorid.com.mfinfo.sharedPref.portfolio;
@@ -222,25 +225,26 @@ public class addToPortfolioFragment extends Fragment implements ServiceCallBack 
         return obj.get("nav").toString().replaceAll("\"","");
     }
 
-    public void AddtoSharedPrePortfolio(String mname,String code,Double mcurrentNav,Double mdateNav,Double mChange,Double mAmountInvested,Double mUnits ,String mCurrentDate){
+    public void AddtoSharedPrePortfolio(String mname,String code,Double mcurrentNav,Double mdateNav,Double mChange,Double mAmountInvested,Double mUnits ,String mCurrentDate) {
+        if (updatesharedpref(code, mcurrentNav, mCurrentDate, mUnits, mAmountInvested)) {
+            System.out.println("INSIDE");
+            boolean check = true;
+            ArrayList<portfolio> p1 = sharedPreference.getFavorites(this.getActivity().getApplicationContext());
 
-        boolean check=true;
-        ArrayList<portfolio> p1=sharedPreference.getFavorites(this.getActivity().getApplicationContext());
-
-            portfolio p=new portfolio(mname,mdateNav,mcurrentNav,code,mChange,mCurrentDate,mUnits,mAmountInvested);
+            portfolio p = new portfolio(mname, mdateNav, mcurrentNav, code, mChange, mCurrentDate, mUnits, mAmountInvested);
             sharedPreference.addFavorite(this.getActivity().getApplicationContext(), p);
             sharedPreference = new portfolioPref();
-            ArrayList<portfolio> pSharePre=sharedPreference.getFavorites(this.getActivity().getApplicationContext());
-            ArrayList<String> Sname=new ArrayList<>();
-            ArrayList<Double> ScurrentNav=new ArrayList<>();
-            ArrayList<String> Scode=new ArrayList<>();
-            ArrayList<Double> SdateNav=new ArrayList<>();
-            ArrayList<Double> Schange=new ArrayList<>();
-            ArrayList<Double> SAmountInvested=new ArrayList<>();
-            ArrayList<Double> SUnits=new ArrayList<>();
-            ArrayList<String> Sdate=new ArrayList<>();
+            ArrayList<portfolio> pSharePre = sharedPreference.getFavorites(this.getActivity().getApplicationContext());
+            ArrayList<String> Sname = new ArrayList<>();
+            ArrayList<Double> ScurrentNav = new ArrayList<>();
+            ArrayList<String> Scode = new ArrayList<>();
+            ArrayList<Double> SdateNav = new ArrayList<>();
+            ArrayList<Double> Schange = new ArrayList<>();
+            ArrayList<Double> SAmountInvested = new ArrayList<>();
+            ArrayList<Double> SUnits = new ArrayList<>();
+            ArrayList<String> Sdate = new ArrayList<>();
 
-            if(pSharePre!=null) {
+            if (pSharePre != null) {
                 System.out.println(pSharePre.size());
                 for (int i = 0; i < pSharePre.size(); i++) {
                     Sname.add(pSharePre.get(i).getName());
@@ -253,18 +257,70 @@ public class addToPortfolioFragment extends Fragment implements ServiceCallBack 
                     Sdate.add(pSharePre.get(i).getdate());
 
 
-                }}
+                }
+            }
             // lv.setAdapter(new CustomAdapter(getActivity(), name.toArray(new String[0]), name.toArray(new String[0])));
 
 
             System.out.println(userPortfolioFragment.adapter);
+            portfolioAdapter a=new portfolioAdapter();
+
+            List<PortfolioInfo> resultPortfolio = new ArrayList<PortfolioInfo>();
+            PortfolioInfo pi=new PortfolioInfo();
+            pi.mAmountInvested=mAmountInvested;
+            pi.mCode=code;
+            pi.mdate=mCurrentDate;
+            pi.mName=mname;
+            pi.mNav=mcurrentNav;
+            pi.mUnit=mUnits;
+            resultPortfolio.add(pi);
+            //a.refereshData(resultPortfolio);
+
+
+
+            PortfolioInfo pte=new PortfolioInfo();
+            pte.setmAmountInvested(mAmountInvested);
+            pte.setmCode(code);
+            pte.setMdate(mCurrentDate);
+            pte.setmName(mname);
+            pte.setmNav(mcurrentNav);
+            pte.setmUnit(mUnits);
+
+            portfolioAdapter ptemp=new portfolioAdapter(resultPortfolio);
+            ptemp.notifyDataSetChanged();
+            //ptemp.refereshData(pte);
             //TwoFragment.adapter.refereshData(Sname.toArray(new String[0]), Sname.toArray(new String[0]),Sname.toArray(new String[0]),Sdate.toArray(new String[0]));
 
 
         }
+    }
 
-    public void updateNavondate(){
-        edit_Nav.setText("12");
+   // public void updatesharedpref(String mname,String code,Double mcurrentNav,Double mdateNav,Double mChange,Double mAmountInvested,Double mUnits ,String mCurrentDate){
+     public boolean updatesharedpref(String code,Double tnav,String date,Double Iunits,Double Iamount){
+         boolean check=true;
+        ArrayList<portfolio> p1=sharedPreference.getFavorites(this.getActivity().getApplicationContext());
+         if(p1!=null) {
+             for (int i = 0; i < p1.size(); i++) {
+                 System.out.println("Shared pref =" + p1.get(i).getCode());
+                 if (p1.get(i).getCode().equals(code)) {
+                     check=false;
+                     System.out.println("Found out");
+                     Double pr_amount = p1.get(i).getAmoutInv() + Iamount;
+                     Double units = p1.get(i).getUnits() + Iunits;
+                     String name = p1.get(i).getName();
+                     Double changes = p1.get(i).getChange();
+                     String sdate = p1.get(i).getdate();
+                     p1.remove(p1.get(i));
+                     portfolio ptemp = new portfolio(name, tnav, tnav, code, changes, sdate, units, pr_amount);
+                     p1.add(ptemp);
+                     sharedPreference.clearsavedpref(this.getActivity().getApplicationContext());
+                     sharedPreference.saveFavorites(this.getActivity().getApplicationContext(), p1);
+
+
+                 }
+             }
+         }
+         return check;
     }
     private void showDatePicker() {
         DatePickerFragment date = new DatePickerFragment();

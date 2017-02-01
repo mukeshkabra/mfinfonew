@@ -64,7 +64,7 @@ public class portfolioPref {
         for(int i=0;i<favorites.size();i++){
             System.out.println("inside removed"+favorites.get(i));
         }
-        System.out.println("Actual removed"+product);
+        System.out.println("Actual removed" + product);
         if (favorites != null) {
             favorites.remove(product);
             System.out.println("removed");
@@ -92,5 +92,7 @@ public class portfolioPref {
 
         return (ArrayList<portfolio>) favorites;
     }
+
+
 
     }

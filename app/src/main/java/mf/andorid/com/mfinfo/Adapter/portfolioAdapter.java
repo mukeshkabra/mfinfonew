@@ -25,6 +25,9 @@ public class portfolioAdapter extends RecyclerView.Adapter<portfolioAdapter.Cont
     public portfolioAdapter(List<PortfolioInfo> contactList) {
         this.contactList = contactList;
     }
+    public portfolioAdapter(){
+
+    }
 
     @Override
     public int getItemCount() {
@@ -33,6 +36,7 @@ public class portfolioAdapter extends RecyclerView.Adapter<portfolioAdapter.Cont
 
     @Override
     public void onBindViewHolder(ContactViewHolder contactViewHolder, int i) {
+        System.out.println("INside bind view");
         PortfolioInfo ci = contactList.get(i);
         contactViewHolder.vName.setText("Nav : "+ci.mNav);
         String mUnits = String.format("%.2f", ci.mUnit);
@@ -128,6 +132,11 @@ public class portfolioAdapter extends RecyclerView.Adapter<portfolioAdapter.Cont
     public interface ItemClickListener {
         void onClickItem(int pos);
 
+    }
+    public void refereshData(List<PortfolioInfo> contactList) {
+        this.contactList=contactList;
+        System.out.println("INside refreshdata");
+        notifyDataSetChanged();
     }
 
 }

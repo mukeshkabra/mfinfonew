@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import mf.andorid.com.mfinfo.Adapter.Product;
+import mf.andorid.com.mfinfo.Adapter.wishlistAdapter;
 import mf.andorid.com.mfinfo.Fragments.addToPortfolioFragment;
 import mf.andorid.com.mfinfo.Fragments.mfHistoryFragment;
 import mf.andorid.com.mfinfo.PagerAdapter;
@@ -397,7 +398,8 @@ public class mfDetailActivity extends FragmentActivity implements ServiceCallBac
 
 
             //System.out.println("VAlue"+mf.andorid.com.mfinfo.PortfolioAdapte);
-            //       mf.andorid.com.mfinfo.watchlist.adapter.refereshData(name1.toArray(new String[0]), nav1.toArray(new String[0]),mchange1.toArray(new String[0]),mdate1.toArray(new String[0]));
+            wishlistAdapter adapter=new wishlistAdapter();
+            adapter.refereshData(name1.toArray(new String[0]), nav1.toArray(new String[0]),mchange1.toArray(new String[0]),mdate1.toArray(new String[0]));
 
 
         }
