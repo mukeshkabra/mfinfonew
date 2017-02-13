@@ -19,12 +19,14 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 import mf.andorid.com.mfinfo.Adapter.portfolioAdapter;
@@ -77,7 +79,7 @@ public class addToPortfolioFragment extends Fragment implements ServiceCallBack 
     static final int DATE_DIALOG_ID = 999;
 
     private OnFragmentInteractionListener mListener;
-
+    HashMap<Integer,String> datehm=new HashMap<>();
 
     @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -87,6 +89,11 @@ public class addToPortfolioFragment extends Fragment implements ServiceCallBack 
         currentNav=getArguments().get("mNav").toString();
         System.out.println("Code ="+mcode);
         System.out.println("Code ="+mfName);
+        datehm.put(01,"Jan");
+        datehm.put(02,"Feb");
+        datehm.put(03,"March");
+        datehm.put(12,"Dec");
+        datehm.put(11,"Nov");
 
 
     }
@@ -105,10 +112,11 @@ public class addToPortfolioFragment extends Fragment implements ServiceCallBack 
                 public void onDateSet(DatePicker view, int year, int monthOfYear,
                                       int dayOfMonth) {
                     edit_date=(EditText) getActivity().findViewById(R.id.editText_Date);
-                    edit_date.setText(String.valueOf(dayOfMonth) + "-" + String.valueOf(monthOfYear+1)
+                    edit_date.setText(String.valueOf(dayOfMonth) + "-" + String.valueOf(monthOfYear + 1)
                             + "-" + String.valueOf(year));
-                    //getNavonDate(mcode,String.valueOf(dayOfMonth) + "-" + String.valueOf(monthOfYear+1)+ "-" + String.valueOf(year));
-                    getNavonDate(mcode, "02-Nov-2016");
+
+                    getNavonDate(mcode,String.valueOf(dayOfMonth) + "-" +datehm.get(monthOfYear+1) + "-" + String.valueOf(year));
+                    //getNavonDate(mcode, "02-Nov-2016");
                 }
             };
             img_selectdate.setOnClickListener(new View.OnClickListener() {
@@ -363,18 +371,23 @@ public class addToPortfolioFragment extends Fragment implements ServiceCallBack 
 
     @Override
     public void onSuccess(int tag, String baseResponse) {
-        System.out.println(baseResponse);
-        JsonParser j= new JsonParser();
-        JsonObject obj =(JsonObject)j.parse(baseResponse.toString());
+        System.out.println("base response=" + baseResponse);
+        JsonParser j = new JsonParser();
+        JsonObject obj = (JsonObject) j.parse(baseResponse.toString());
         //obj.get("nav")
-        System.out.println("Hello result " + obj.get("nav"));
-        System.out.println("Hello result " + obj.get("nav").toString().replaceAll("\"", ""));
-        String navondate=obj.get("nav").toString().replaceAll("\"","");
+        System.out.println(obj.isJsonNull());
+        if (obj.get("nav") != null) {
+            System.out.println("Hello result " + obj.get("nav"));
+            System.out.println("Hello result " + obj.get("nav").toString().replaceAll("\"", ""));
+            String navondate = obj.get("nav").toString().replaceAll("\"", "");
 
-        System.out.println(navondate);
-        EditText editText1=(EditText)getActivity().findViewById(R.id.editText_nav);
-        // System.out.println(editText1);
-        editText1.setText(navondate);
+            System.out.println(navondate);
+            EditText editText1 = (EditText) getActivity().findViewById(R.id.editText_nav);
+            // System.out.println(editText1);
+            editText1.setText(navondate);
+        } else {
+            Toast.makeText(getActivity().getApplicationContext(),"Please enter proper date",Toast.LENGTH_LONG);
+        }
     }
 
     @Override

@@ -122,15 +122,17 @@ public class mfactivity extends AppCompatActivity implements ServiceCallBack{
     public void onSuccess(int tag, String baseResponse) {
         try {
             JSONArray array=new JSONArray(baseResponse.toString());
-            for(int i=0;i<array.length();i++){
-                JSONObject c=array.getJSONObject(i);
-                code.add(c.getString("code"));
-                date.add(c.getString("navdate"));
-                JSONObject info=c.getJSONObject("info");
-                String temp=info.get("name")+"-"+info.getString("typemf");
-                name.add(temp);
-                nav.add(info.getString("nav"));
+            for(int i=0;i<array.length();i++) {
+                JSONObject c = array.getJSONObject(i);
+                JSONObject info = c.getJSONObject("info");
+                if (!(info.getString("nav").equals("N.A."))) {
+                    code.add(c.getString("code"));
+                    date.add(c.getString("navdate"));
+                    String temp = info.get("name") + "-" + info.getString("typemf");
+                    name.add(temp);
+                    nav.add(info.getString("nav"));
 
+                }
             }
             showlist();
         }
