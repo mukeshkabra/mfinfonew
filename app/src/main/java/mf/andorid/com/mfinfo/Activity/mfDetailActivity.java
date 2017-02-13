@@ -195,7 +195,7 @@ public class mfDetailActivity extends FragmentActivity implements ServiceCallBac
                 wishlistBundle.putString("mCode",code);
                 wishlistBundle.putString("mNav", nav);
                 wi1.setArguments(wishlistBundle);
-                //transaction.replace(R.id.frame, wi1, "Hello");
+                transaction.replace(R.id.frame, wi1, "Hello");
                 transaction.addToBackStack("Hello1").commit();
                // img_addto.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.green));
 

@@ -94,7 +94,7 @@ public class addToPortfolioFragment extends Fragment implements ServiceCallBack 
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View vu = inflater.inflate(R.layout.wishlist, container, false);
             sharedPreference = new portfolioPref();
-
+            System.out.println("Hello");
             edit_date=(EditText)vu.findViewById(R.id.editText_Date);
             img_selectdate=(ImageView)vu.findViewById(R.id.img_selectdate);
             final Button btn_save=(Button) vu.findViewById(R.id.btn_Save);
