@@ -194,6 +194,7 @@ public class mfDetailActivity extends FragmentActivity implements ServiceCallBac
                 wishlistBundle.putString("mfName",name);
                 wishlistBundle.putString("mCode",code);
                 wishlistBundle.putString("mNav", nav);
+                wishlistBundle.putSerializable("history",hm);
                 wi1.setArguments(wishlistBundle);
                 transaction.replace(R.id.frame, wi1, "Hello");
                 transaction.addToBackStack("Hello1").commit();

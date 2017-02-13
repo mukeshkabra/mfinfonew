@@ -80,6 +80,7 @@ public class addToPortfolioFragment extends Fragment implements ServiceCallBack 
 
     private OnFragmentInteractionListener mListener;
     HashMap<Integer,String> datehm=new HashMap<>();
+    HashMap<String,String> historymap=new HashMap<>();
 
     @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -87,6 +88,7 @@ public class addToPortfolioFragment extends Fragment implements ServiceCallBack 
         mcode=getArguments().get("mCode").toString();
         mfName=getArguments().get("mfName").toString();
         currentNav=getArguments().get("mNav").toString();
+        historymap=(HashMap<String, String>)getArguments().getSerializable("history");
         System.out.println("Code ="+mcode);
         System.out.println("Code ="+mfName);
         datehm.put(01,"Jan");
@@ -111,12 +113,30 @@ public class addToPortfolioFragment extends Fragment implements ServiceCallBack 
 
                 public void onDateSet(DatePicker view, int year, int monthOfYear,
                                       int dayOfMonth) {
-                    edit_date=(EditText) getActivity().findViewById(R.id.editText_Date);
+                    edit_date = (EditText) getActivity().findViewById(R.id.editText_Date);
                     edit_date.setText(String.valueOf(dayOfMonth) + "-" + String.valueOf(monthOfYear + 1)
                             + "-" + String.valueOf(year));
+                    String tempdate=String.valueOf(dayOfMonth) + "-0" + String.valueOf(monthOfYear + 1)
+                            + "-" + String.valueOf(year);
+                    String tempmonth;
+                    if((monthOfYear+1)<9){
+                        tempmonth="0"+String.valueOf(monthOfYear+1);
+                    }
+                    else{
+                        tempmonth=String.valueOf(monthOfYear+1);
+                    }
 
-                    getNavonDate(mcode,String.valueOf(dayOfMonth) + "-" +datehm.get(monthOfYear+1) + "-" + String.valueOf(year));
-                    //getNavonDate(mcode, "02-Nov-2016");
+                    if (historymap.containsKey(String.valueOf(dayOfMonth) + "-" + tempmonth
+                            + "-" + String.valueOf(year))) {
+                        System.out.println("Yes it has");
+                        EditText editText1 = (EditText) getActivity().findViewById(R.id.editText_nav);
+                        // System.out.println(editText1);
+                        editText1.setText(historymap.get(String.valueOf(dayOfMonth) + "-0" + String.valueOf(monthOfYear + 1)
+                                + "-" + String.valueOf(year)));
+                    } else {
+                        getNavonDate(mcode, String.valueOf(dayOfMonth) + "-" + datehm.get(monthOfYear + 1) + "-" + String.valueOf(year));
+                        //getNavonDate(mcode, "02-Nov-2016");
+                    }
                 }
             };
             img_selectdate.setOnClickListener(new View.OnClickListener() {
@@ -375,6 +395,7 @@ public class addToPortfolioFragment extends Fragment implements ServiceCallBack 
         JsonParser j = new JsonParser();
         JsonObject obj = (JsonObject) j.parse(baseResponse.toString());
         //obj.get("nav")
+        EditText editText1 = (EditText) getActivity().findViewById(R.id.editText_nav);
         System.out.println(obj.isJsonNull());
         if (obj.get("nav") != null) {
             System.out.println("Hello result " + obj.get("nav"));
@@ -382,11 +403,12 @@ public class addToPortfolioFragment extends Fragment implements ServiceCallBack 
             String navondate = obj.get("nav").toString().replaceAll("\"", "");
 
             System.out.println(navondate);
-            EditText editText1 = (EditText) getActivity().findViewById(R.id.editText_nav);
+
             // System.out.println(editText1);
             editText1.setText(navondate);
         } else {
             Toast.makeText(getActivity().getApplicationContext(),"Please enter proper date",Toast.LENGTH_LONG);
+            editText1.setText("");
         }
     }
 
