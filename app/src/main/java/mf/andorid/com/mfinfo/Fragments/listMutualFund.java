@@ -14,6 +14,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.himanshuvirmani.androidcache.CacheManager;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -22,6 +24,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.TreeMap;
 
+import mf.andorid.com.mfinfo.Activity.MyApplication;
 import mf.andorid.com.mfinfo.Activity.mfactivity;
 import mf.andorid.com.mfinfo.R;
 import mf.andorid.com.mfinfo.webrequests.Api;
@@ -76,6 +79,13 @@ public class listMutualFund extends ListFragment implements ServiceCallBack {
 
 
     public void getAllMutualFunds() {
+        MyApplication m=MyApplication.getInstance();
+        m.prepareCache();
+        CacheManager cacheManager = m.getCacheManager();
+
+
+
+
         //loading.show();
         BaseRequest baseRequest = new BaseRequest(getActivity());
         baseRequest.setServiceCallBack(this);
@@ -109,6 +119,11 @@ public class listMutualFund extends ListFragment implements ServiceCallBack {
         } catch (Exception e) {
             System.out.println(e);
         }
+        MyApplication m=MyApplication.getInstance();
+        m.prepareCache();
+        CacheManager cacheManager = m.getCacheManager();
+
+        cacheManager.put("myKey", baseResponse);
 
         showlist();
     }

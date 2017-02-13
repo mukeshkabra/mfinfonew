@@ -4,10 +4,13 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.net.NetworkInfo;
 
+import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -25,14 +28,15 @@ import retrofit.converter.ConversionException;
 import retrofit.converter.Converter;
 import retrofit.mime.TypedInput;
 import retrofit.mime.TypedOutput;
-
 /**
  * Created by Admin on 9/21/2015.
  */
 public class RestClient {
     public static int GET_MUTUAL_FUNDS = 10001;
     public static int GET_HISTORY = 10002;
-
+    private static long SIZE_OF_CACHE = 10 * 1024 * 1024; // 10 MB
+    private static Context mContext;
+    public static NetworkInfo ni;
 
     private BaseRequest baseRequest;
 
@@ -94,6 +98,7 @@ public class RestClient {
 */
         RestAdapter.Builder builder = new RestAdapter.Builder().setEndpoint("http://127.0.0.1:8988/mf/").setClient(new OkClient(getClient()));
         builder.setLogLevel(RestAdapter.LogLevel.FULL).setConverter(new StringConverter());
+
         RestAdapter restAdapter = builder.build();
         return restAdapter.create(apiClasses);
     }
@@ -176,9 +181,20 @@ public class RestClient {
     }
 
     private OkHttpClient getClient() {
+
+        Cache cache = null;
+        mContext=this.context;
+        try {
+            cache = new Cache(new File(mContext.getCacheDir(), "http"), SIZE_OF_CACHE);
+        } catch (Exception e) {
+            System.out.println("");
+        }
         OkHttpClient client = new OkHttpClient();
+        client.setCache(cache);
         client.setConnectTimeout(5, TimeUnit.MINUTES);
         client.setReadTimeout(5, TimeUnit.MINUTES);
+
         return client;
     }
+
 }

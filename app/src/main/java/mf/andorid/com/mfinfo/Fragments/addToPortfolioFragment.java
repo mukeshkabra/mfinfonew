@@ -1,5 +1,6 @@
 package mf.andorid.com.mfinfo.Fragments;
 
+import android.app.Activity;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -72,9 +73,10 @@ public class addToPortfolioFragment extends Fragment implements ServiceCallBack 
     OnDateSetListener ondate;
     EditText edit_date;
 
-
+    String btn_status;
     static final int DATE_DIALOG_ID = 999;
 
+    private OnFragmentInteractionListener mListener;
 
 
     @Override
@@ -178,10 +180,13 @@ public class addToPortfolioFragment extends Fragment implements ServiceCallBack 
                     if(f.getBackStackEntryCount()==2){
                         f.popBackStack();
                     }
+                    btn_status="save";
+                    onButtonPressed(btn_status);
 
                 }
             });
             Button btn_cancel=(Button) vu.findViewById(R.id.btn_cancel);
+
             btn_cancel.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     System.out.println("HelloCancel");
@@ -190,6 +195,8 @@ public class addToPortfolioFragment extends Fragment implements ServiceCallBack 
                     if(f.getBackStackEntryCount()==2){
                         f.popBackStack();
                     }
+                btn_status="cancel";
+                    onButtonPressed(btn_status);
                 }
             });
 
@@ -373,6 +380,23 @@ public class addToPortfolioFragment extends Fragment implements ServiceCallBack 
     @Override
     public void onFail(RetrofitError error) {
 
+    }
+    public interface OnFragmentInteractionListener {
+        public void onFragmentInteraction(String btn_value);
+    }
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (OnFragmentInteractionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement OnFragmentInteractionListener");
+        }
+    }
+    public void onButtonPressed(String btn_value) {
+        if (mListener != null) {
+            mListener.onFragmentInteraction(btn_value);
+        }
     }
 }
 

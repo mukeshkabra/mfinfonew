@@ -49,7 +49,7 @@ import retrofit.RetrofitError;
 /**
  * Created by 8398 on 29/11/16.
  */
-public class mfDetailActivity extends FragmentActivity implements ServiceCallBack {
+public class mfDetailActivity extends FragmentActivity implements ServiceCallBack,addToPortfolioFragment.OnFragmentInteractionListener {
     public double lastdayNav;
     public double weeklychange;
     DecimalFormat df = new DecimalFormat("0.00");
@@ -193,11 +193,11 @@ public class mfDetailActivity extends FragmentActivity implements ServiceCallBac
                 Bundle wishlistBundle=new Bundle();
                 wishlistBundle.putString("mfName",name);
                 wishlistBundle.putString("mCode",code);
-                wishlistBundle.putString("mNav",nav);
+                wishlistBundle.putString("mNav", nav);
                 wi1.setArguments(wishlistBundle);
-                transaction.replace(R.id.frame, wi1, "Hello");
+                //transaction.replace(R.id.frame, wi1, "Hello");
                 transaction.addToBackStack("Hello1").commit();
-                img_addto.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.green));
+               // img_addto.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.green));
 
             }
         });
@@ -274,7 +274,7 @@ public class mfDetailActivity extends FragmentActivity implements ServiceCallBac
     @Override
     public void onBackPressed() {
         List<Fragment> fragmentss = fragmentManager.getFragments();
-        System.out.println("BACK KEY PRESS ="+fragmentss.size());
+        System.out.println("BACK KEY PRESS =" + fragmentss.size());
         if (fragmentss != null && fragmentss.size() > 4) {
             Fragment fragment=fragmentss.get(0);
             //Fragment fragment1=fragmentss.get(1);
@@ -487,6 +487,17 @@ public class mfDetailActivity extends FragmentActivity implements ServiceCallBac
     @Override
     public void onFail(RetrofitError error) {
 
+    }
+
+    @Override
+    public void onFragmentInteraction(String btn_value) {
+        if(btn_value.toString().equals("save")){
+            System.out.println("Buttonsave");
+            img_addto.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.green));
+
+        }else{
+            System.out.println("Buttoncancel");
+        }
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
