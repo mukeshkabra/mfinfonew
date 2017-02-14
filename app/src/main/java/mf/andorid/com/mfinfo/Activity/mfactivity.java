@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -30,6 +32,7 @@ public class mfactivity extends AppCompatActivity implements ServiceCallBack{
     ListView lv;
     Context context;
     ArrayList prgmName;
+    private MenuItem mSearchAction;
     ArrayList<String> name=new ArrayList<>();
     ArrayList<String> nav=new ArrayList<>();
     ArrayList<String> code=new ArrayList<>();
@@ -58,12 +61,12 @@ public class mfactivity extends AppCompatActivity implements ServiceCallBack{
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent newActivity = new Intent(mfactivity.this,mfDetailActivity.class);
-                newActivity.putExtra("code",code.get(position));
-                newActivity.putExtra("Name",name.get(position));
-                newActivity.putExtra("Nav",nav.get(position));
-                newActivity.putExtra("date",date.get(position));
-                newActivity.putExtra("Button","true");
+                Intent newActivity = new Intent(mfactivity.this, mfDetailActivity.class);
+                newActivity.putExtra("code", code.get(position));
+                newActivity.putExtra("Name", name.get(position));
+                newActivity.putExtra("Nav", nav.get(position));
+                newActivity.putExtra("date", date.get(position));
+                newActivity.putExtra("Button", "true");
                 startActivity(newActivity);
             }
         });
@@ -105,6 +108,11 @@ public class mfactivity extends AppCompatActivity implements ServiceCallBack{
 
         return result.toString();
     }*/
+   @Override
+   public boolean onPrepareOptionsMenu(Menu menu) {
+       mSearchAction = menu.findItem(R.id.action_search);
+       return super.onPrepareOptionsMenu(menu);
+   }
     public void getAllMutualFunds(String pid) {
         //loading.show();
         BaseRequest baseRequest = new BaseRequest(this);
