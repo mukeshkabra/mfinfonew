@@ -276,7 +276,7 @@ public class mfDetailActivity extends FragmentActivity implements ServiceCallBac
     public void onBackPressed() {
         List<Fragment> fragmentss = fragmentManager.getFragments();
         System.out.println("BACK KEY PRESS =" + fragmentss.size());
-        if (fragmentss != null && fragmentss.size() > 4) {
+        if (fragmentss != null && fragmentss.size() > 5) {
             Fragment fragment=fragmentss.get(0);
             //Fragment fragment1=fragmentss.get(1);
             //System.out.println(fragment.toString());
@@ -289,6 +289,7 @@ public class mfDetailActivity extends FragmentActivity implements ServiceCallBac
                 }}
             else{
                 super.finish();
+                this.finish();
             }
         }
         else{

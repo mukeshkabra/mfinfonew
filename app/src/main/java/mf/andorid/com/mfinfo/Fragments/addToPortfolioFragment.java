@@ -119,19 +119,20 @@ public class addToPortfolioFragment extends Fragment implements ServiceCallBack 
                     String tempdate=String.valueOf(dayOfMonth) + "-0" + String.valueOf(monthOfYear + 1)
                             + "-" + String.valueOf(year);
                     String tempmonth;
+
                     if((monthOfYear+1)<9){
                         tempmonth="0"+String.valueOf(monthOfYear+1);
                     }
                     else{
                         tempmonth=String.valueOf(monthOfYear+1);
                     }
-
+                    System.out.println(tempmonth);
                     if (historymap.containsKey(String.valueOf(dayOfMonth) + "-" + tempmonth
                             + "-" + String.valueOf(year))) {
                         System.out.println("Yes it has");
                         EditText editText1 = (EditText) getActivity().findViewById(R.id.editText_nav);
                         // System.out.println(editText1);
-                        editText1.setText(historymap.get(String.valueOf(dayOfMonth) + "-0" + String.valueOf(monthOfYear + 1)
+                        editText1.setText(historymap.get(String.valueOf(dayOfMonth) + "-" + tempmonth
                                 + "-" + String.valueOf(year)));
                     } else {
                         getNavonDate(mcode, String.valueOf(dayOfMonth) + "-" + datehm.get(monthOfYear + 1) + "-" + String.valueOf(year));
